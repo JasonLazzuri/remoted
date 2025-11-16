@@ -1,0 +1,32 @@
+{
+  "name": "remoted",
+  "version": "1.0.0",
+  "description": "Professional remote desktop application",
+  "private": true,
+  "workspaces": [
+    "signaling-server",
+    "host-app",
+    "client-app",
+    "shared"
+  ],
+  "scripts": {
+    "install-all": "npm install",
+    "server": "npm run dev --workspace=signaling-server",
+    "host": "npm run dev --workspace=host-app",
+    "client": "npm run dev --workspace=client-app",
+    "build:server": "npm run build --workspace=signaling-server",
+    "build:host": "npm run build --workspace=host-app",
+    "build:client": "npm run build --workspace=client-app",
+    "build:all": "npm run build:server && npm run build:host && npm run build:client"
+  },
+  "keywords": [
+    "remote-desktop",
+    "webrtc",
+    "electron"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron-rebuild": "^3.2.9"
+  }
+}

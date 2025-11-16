@@ -1,0 +1,26 @@
+# fly.toml - Configuration for fly.io deployment
+# Run `fly deploy` to deploy to fly.io
+
+app = "remoted-signaling-server"
+primary_region = "sjc"  # San Jose - change to your preferred region
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  NODE_ENV = "production"
+  PORT = "8080"
+  # SSL is handled by fly.io's edge network
+  # Your apps should connect via wss://<app-name>.fly.dev
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 256
