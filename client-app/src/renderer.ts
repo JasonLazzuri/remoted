@@ -148,11 +148,12 @@ class ClientRenderer {
   private async setupPeerConnection(): Promise<void> {
     console.log('Setting up peer connection');
 
+    // Get ICE servers (including TURN if configured)
+    const iceServers = await ipcRenderer.invoke('get-ice-servers');
+    console.log('ICE servers configuration:', iceServers);
+
     this.peerConnection = new RTCPeerConnection({
-      iceServers: [
-        { urls: 'stun:stun.l.google.com:19302' },
-        { urls: 'stun:stun1.l.google.com:19302' },
-      ],
+      iceServers,
     });
 
     // Set up ICE candidate handling

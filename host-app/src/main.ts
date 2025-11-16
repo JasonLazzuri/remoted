@@ -18,6 +18,9 @@ import {
 } from '@remoted/shared';
 
 const SIGNALING_SERVER = process.env.SIGNALING_SERVER || 'ws://localhost:8080';
+const TURN_SERVER_URL = process.env.TURN_SERVER_URL || '';
+const TURN_SERVER_USERNAME = process.env.TURN_SERVER_USERNAME || '';
+const TURN_SERVER_CREDENTIAL = process.env.TURN_SERVER_CREDENTIAL || '';
 
 class HostApp {
   private mainWindow: BrowserWindow | null = null;
@@ -278,6 +281,28 @@ class HostApp {
     ipcMain.handle('get-screen-size', () => {
       const primaryDisplay = screen.getPrimaryDisplay();
       return primaryDisplay.size;
+    });
+
+    // Get ICE server configuration (STUN + TURN)
+    ipcMain.handle('get-ice-servers', () => {
+      const iceServers: RTCIceServer[] = [
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun1.l.google.com:19302' },
+      ];
+
+      // Add TURN server if configured
+      if (TURN_SERVER_URL && TURN_SERVER_USERNAME && TURN_SERVER_CREDENTIAL) {
+        iceServers.push({
+          urls: TURN_SERVER_URL,
+          username: TURN_SERVER_USERNAME,
+          credential: TURN_SERVER_CREDENTIAL,
+        });
+        console.log('TURN server configured:', TURN_SERVER_URL);
+      } else {
+        console.log('No TURN server configured (using STUN only)');
+      }
+
+      return iceServers;
     });
 
     // Handle control messages from renderer
